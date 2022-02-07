@@ -11,7 +11,7 @@ static void modificaMansione(MYSQL *conn)
 
     // Prepare stored procedure call
     if(!setup_prepared_stmt(&prepared_stmt, "call ModificaMansione(?, ?)", conn)) {
-        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize career report statement\n", false);
+        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize 'ModificaMansione' statement\n", false);
     }
 
     // Prepare parameters
@@ -32,12 +32,12 @@ static void modificaMansione(MYSQL *conn)
 
 
     if (mysql_stmt_bind_param(prepared_stmt, param) != 0) {
-        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for career report\n", true);
+        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for 'ModificaMansione'\n", true);
     }
 
     // Run procedure
     if (mysql_stmt_execute(prepared_stmt) != 0) {
-        print_stmt_error(prepared_stmt, "An error occurred while retrieving the career report.");
+        print_stmt_error(prepared_stmt, "An error occurred while changing employee's job.");
         goto out;
     }
 
@@ -55,7 +55,7 @@ static void mostraStoricoUffici(MYSQL *conn)
 
     // Prepare stored procedure call
     if(!setup_prepared_stmt(&prepared_stmt, "call StoricoUffici(?)", conn)) {
-        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize career report statement\n", false);
+        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize 'StoricoUffici' statement\n", false);
     }
 
     // Prepare parameters
@@ -69,12 +69,12 @@ static void mostraStoricoUffici(MYSQL *conn)
     param[0].buffer_length = strlen((char *)param[0].buffer);
 
     if (mysql_stmt_bind_param(prepared_stmt, param) != 0) {
-        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for career report\n", true);
+        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for 'StroicoUffici't\n", true);
     }
 
     // Run procedure
     if (mysql_stmt_execute(prepared_stmt) != 0) {
-        print_stmt_error(prepared_stmt, "An error occurred while retrieving the career report.");
+        print_stmt_error(prepared_stmt, "An error occurred while retrieving the offices report.");
         goto out;
     }
 
@@ -82,7 +82,7 @@ static void mostraStoricoUffici(MYSQL *conn)
 
     do {
         dump_result_set(conn, prepared_stmt, "\nUffici occupati nel tempo:\n");
-    } while (mysql_stmt_next_result(prepared_stmt) == 0);
+    } while (mysql_stmt_next_result(prepared_stmt) == 0);//mi assicuro di consumare tutto il result set, altrimenti potrei ottenere "out of sync"
 
     out:
     mysql_stmt_close(prepared_stmt);

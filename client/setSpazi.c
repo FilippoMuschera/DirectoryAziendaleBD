@@ -4,65 +4,65 @@
 
 #include "defines.h"
 
-void reportDipendenti(MYSQL *conn)
+static void reportDipendenti(MYSQL *conn)
 {
     MYSQL_STMT *prepared_stmt;
 
 
     // Prepare stored procedure call
     if(!setup_prepared_stmt(&prepared_stmt, "call ReportDipendentiTrasferire()", conn)) {
-        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize career report statement\n", false);
+        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize 'ReportDipendentiTrasferire' statement\n", false);
     }
 
     // No parameters to prepare
     // Run procedure
     if (mysql_stmt_execute(prepared_stmt) != 0) {
-        print_stmt_error(prepared_stmt, "An error occurred while retrieving the career report.");
+        print_stmt_error(prepared_stmt, "An error occurred while retrieving employees' report.");
         goto out;
     }
 
     do {
         dump_result_set(conn, prepared_stmt, "\nDipendenti trovati:");
-    } while (mysql_stmt_next_result(prepared_stmt) == 0);
+    } while (mysql_stmt_next_result(prepared_stmt) == 0); //mi assicuro di consumare tutto il result set, altrimenti potrei ottenere "out of sync"
 
     out:
     mysql_stmt_close(prepared_stmt);
 }
 
 
-void reportDipendentiMansione(MYSQL *conn)
+static void reportDipendentiMansione(MYSQL *conn)
 {
     MYSQL_STMT *prepared_stmt;
 
 
     // Prepare stored procedure call
     if(!setup_prepared_stmt(&prepared_stmt, "call DipendentiTrasferireMansione()", conn)) {
-        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize career report statement\n", false);
+        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize dipendentiTrasferireMansione statement\n", false);
     }
 
     // No parameters to prepare
     // Run procedure
     if (mysql_stmt_execute(prepared_stmt) != 0) {
-        print_stmt_error(prepared_stmt, "An error occurred while retrieving the career report.");
+        print_stmt_error(prepared_stmt, "An error occurred while retrieving employees' report grouped by job.");
         goto out;
     }
 
     do {
         dump_result_set(conn, prepared_stmt, "\nDipendenti trovati:");
-    } while (mysql_stmt_next_result(prepared_stmt) == 0);
+    } while (mysql_stmt_next_result(prepared_stmt) == 0);//mi assicuro di consumare tutto il result set, altrimenti potrei ottenere "out of sync"
 
     out:
     mysql_stmt_close(prepared_stmt);
 }
 
-void trasferisciDipendente(MYSQL *conn)
+static void trasferisciDipendente(MYSQL *conn)
 {
     MYSQL_STMT *prepared_stmt;
     MYSQL_BIND param[2];
 
     // Prepare stored procedure call
     if(!setup_prepared_stmt(&prepared_stmt, "call Trasferimento(?, ?)", conn)) {
-        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize career report statement\n", false);
+        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize 'Trasferimento' statement\n", false);
     }
 
     // Prepare parameters
@@ -84,12 +84,12 @@ void trasferisciDipendente(MYSQL *conn)
     param[1].buffer_length = strlen((char *)param[1].buffer);
 
     if (mysql_stmt_bind_param(prepared_stmt, param) != 0) {
-        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for career report\n", true);
+        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for transfer\n", true);
     }
 
     // Run procedure
     if (mysql_stmt_execute(prepared_stmt) != 0) {
-        print_stmt_error(prepared_stmt, "An error occurred while retrieving the career report.");
+        print_stmt_error(prepared_stmt, "An error occurred while transfering the employee.");
         goto out;
     }
 
@@ -100,14 +100,14 @@ void trasferisciDipendente(MYSQL *conn)
     mysql_stmt_close(prepared_stmt);
 }
 
-void scambioDipendenti(MYSQL *conn)
+static void scambioDipendenti(MYSQL *conn)
 {
     MYSQL_STMT *prepared_stmt;
     MYSQL_BIND param[2];
 
     // Prepare stored procedure call
     if(!setup_prepared_stmt(&prepared_stmt, "call ScambioPostazione(?, ?)", conn)) {
-        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize career report statement\n", false);
+        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize 'ScambioPostazione' statement\n", false);
     }
 
     // Prepare parameters
@@ -128,12 +128,12 @@ void scambioDipendenti(MYSQL *conn)
     param[1].buffer_length = strlen((char *)param[1].buffer);
 
     if (mysql_stmt_bind_param(prepared_stmt, param) != 0) {
-        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for career report\n", true);
+        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for post switch\n", true);
     }
 
     // Run procedure
     if (mysql_stmt_execute(prepared_stmt) != 0) {
-        print_stmt_error(prepared_stmt, "An error occurred while retrieving the career report.");
+        print_stmt_error(prepared_stmt, "An error occurred while switching posts.");
         goto out;
     }
 
@@ -144,7 +144,7 @@ void scambioDipendenti(MYSQL *conn)
     mysql_stmt_close(prepared_stmt);
 }
 
-void inserisciDipendente(MYSQL *conn)
+static void inserisciDipendente(MYSQL *conn)
 {
     MYSQL_STMT *prepared_stmt;
     MYSQL_BIND param[12];
@@ -152,7 +152,7 @@ void inserisciDipendente(MYSQL *conn)
 
     // Prepare stored procedure call
     if(!setup_prepared_stmt(&prepared_stmt, "call InserisciDipendente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )", conn)) {
-        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize career report statement\n", false);
+        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize 'InserisciDipendente' statement\n", false);
     }
 
     // Prepare parameters
@@ -262,12 +262,12 @@ void inserisciDipendente(MYSQL *conn)
     param[11].buffer_length = strlen((char *)param[11].buffer);
 
     if (mysql_stmt_bind_param(prepared_stmt, param) != 0) {
-        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for career report\n", true);
+        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for 'InserisciDipendente'\n", true);
     }
 
     // Run procedure
     if (mysql_stmt_execute(prepared_stmt) != 0) {
-        print_stmt_error(prepared_stmt, "An error occurred while retrieving the career report.");
+        print_stmt_error(prepared_stmt, "An error occurred while inserting the new employee.");
         goto out;
     }
 
@@ -278,14 +278,14 @@ void inserisciDipendente(MYSQL *conn)
     mysql_stmt_close(prepared_stmt);
 }
 
-void eliminaDipendente(MYSQL *conn)
+static void eliminaDipendente(MYSQL *conn)
 {
     MYSQL_STMT *prepared_stmt;
     MYSQL_BIND param[1];
 
     // Prepare stored procedure call
     if(!setup_prepared_stmt(&prepared_stmt, "call EliminaDipendente(?)", conn)) {
-        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize career report statement\n", false);
+        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize 'EliminaDipendente' statement\n", false);
     }
 
     // Prepare parameters
@@ -299,12 +299,12 @@ void eliminaDipendente(MYSQL *conn)
     param[0].buffer_length = strlen((char *)param[0].buffer);
 
     if (mysql_stmt_bind_param(prepared_stmt, param) != 0) {
-        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for career report\n", true);
+        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for 'EliminaDipendente'\n", true);
     }
 
     // Run procedure
     if (mysql_stmt_execute(prepared_stmt) != 0) {
-        print_stmt_error(prepared_stmt, "An error occurred while retrieving the career report.");
+        print_stmt_error(prepared_stmt, "An error occurred while removing the selected employee, no changes were made to Directory Aziendale.");
         goto out;
     }
 

@@ -4,7 +4,6 @@
 
 #include "defines.h"
 
-//TODO UNIFICARE FUNZIONI E METTERE UNO SWITCH + ENUM
 
 void ricercaDipNomeCognome(MYSQL *conn)
 {
@@ -13,7 +12,7 @@ void ricercaDipNomeCognome(MYSQL *conn)
 
     // Prepare stored procedure call
     if(!setup_prepared_stmt(&prepared_stmt, "call RicercaDipNomeCognome(?, ?)", conn)) {
-        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize career report statement\n", false);
+        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize 'ricercaDipNomeCognome' statement\n", false);
     }
 
     // Prepare parameters
@@ -34,12 +33,12 @@ void ricercaDipNomeCognome(MYSQL *conn)
 
 
     if (mysql_stmt_bind_param(prepared_stmt, param) != 0) {
-        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for career report\n", true);
+        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for ricercaDipNomeCognome\n", true);
     }
 
     // Run procedure
     if (mysql_stmt_execute(prepared_stmt) != 0) {
-        print_stmt_error(prepared_stmt, "An error occurred while retrieving the career report.");
+        print_stmt_error(prepared_stmt, "An error occurred while retrieving the employees names.");
     goto out;
 }
 
@@ -47,7 +46,7 @@ void ricercaDipNomeCognome(MYSQL *conn)
 
 do {
     dump_result_set(conn, prepared_stmt, "\nDipendenti trovati:");
-} while (mysql_stmt_next_result(prepared_stmt) == 0);
+} while (mysql_stmt_next_result(prepared_stmt) == 0);//mi assicuro di consumare tutto il result set, altrimenti potrei ottenere "out of sync"
 
     out:
         mysql_stmt_close(prepared_stmt);
@@ -61,7 +60,7 @@ void ricercaDipCognome(MYSQL *conn) {
 
     // Prepare stored procedure call
     if(!setup_prepared_stmt(&prepared_stmt, "call RicercaDipendenteCognome(?)", conn)) {
-        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize career report statement\n", false);
+        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize 'ricercaDipNome' statement\n", false);
     }
 
     // Prepare parameters
@@ -75,12 +74,12 @@ void ricercaDipCognome(MYSQL *conn) {
     param[0].buffer_length = strlen((char *)param[0].buffer);
 
     if (mysql_stmt_bind_param(prepared_stmt, param) != 0) {
-        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for career report\n", true);
+        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for 'ricerca dipendente per nome'\n", true);
     }
 
     // Run procedure
     if (mysql_stmt_execute(prepared_stmt) != 0) {
-        print_stmt_error(prepared_stmt, "An error occurred while retrieving the career report.");
+        print_stmt_error(prepared_stmt, "An error occurred while retrieving the employees' names.");
         goto out;
     }
 
@@ -88,7 +87,7 @@ void ricercaDipCognome(MYSQL *conn) {
 
     do {
         dump_result_set(conn, prepared_stmt, "\nDipendenti trovati:");
-    } while (mysql_stmt_next_result(prepared_stmt) == 0);
+    } while (mysql_stmt_next_result(prepared_stmt) == 0); //mi assicuro di consumare tutto il result set, altrimenti potrei ottenere "out of sync"
 
     out:
     mysql_stmt_close(prepared_stmt);
@@ -100,7 +99,7 @@ void ricercaDipNome(MYSQL *conn) {
 
 	// Prepare stored procedure call
 	if(!setup_prepared_stmt(&prepared_stmt, "call RicercaDipendenteNome(?)", conn)) {
-		finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize career report statement\n", false);
+		finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize 'ricercaDipNome' statement\n", false);
 	}
 
 	// Prepare parameters
@@ -114,12 +113,12 @@ void ricercaDipNome(MYSQL *conn) {
 	param[0].buffer_length = strlen((char *)param[0].buffer);
 
 	if (mysql_stmt_bind_param(prepared_stmt, param) != 0) {
-		finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for career report\n", true);
+		finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for 'ricercaDipNome'\n", true);
 	}
 
 	// Run procedure
 	if (mysql_stmt_execute(prepared_stmt) != 0) {
-		print_stmt_error(prepared_stmt, "An error occurred while retrieving the career report.");
+		print_stmt_error(prepared_stmt, "An error occurred while retrieving the employees' names .");
 		goto out;
 	}
 
@@ -127,7 +126,7 @@ void ricercaDipNome(MYSQL *conn) {
 
     do {
         dump_result_set(conn, prepared_stmt, "\nDipendenti trovati:");
-    } while (mysql_stmt_next_result(prepared_stmt) == 0);
+    } while (mysql_stmt_next_result(prepared_stmt) == 0);//mi assicuro di consumare tutto il result set, altrimenti potrei ottenere "out of sync"
 
     out:
 	mysql_stmt_close(prepared_stmt);
@@ -140,7 +139,7 @@ void ricercaPostazione(MYSQL *conn)
 
     // Prepare stored procedure call
     if(!setup_prepared_stmt(&prepared_stmt, "call RicercaPostazione(?)", conn)) {
-        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize career report statement\n", false);
+        finish_with_stmt_error(conn, prepared_stmt, "Unable to initialize ricercaPostazione statement\n", false);
     }
 
     // Prepare parameters
@@ -149,25 +148,25 @@ void ricercaPostazione(MYSQL *conn)
     param[0].buffer_type = MYSQL_TYPE_VAR_STRING;
     printf("Inserisci il numero di telefono ESTERNO della postazione da cercare: ");
     char postazione[45];
-    getInput(128, postazione, false);
+    getInput(45, postazione, false);
     param[0].buffer = postazione;
     param[0].buffer_length = strlen((char *)param[0].buffer);
 
     if (mysql_stmt_bind_param(prepared_stmt, param) != 0) {
-        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for career report\n", true);
+        finish_with_stmt_error(conn, prepared_stmt, "Could not bind parameters for ricercaPostazione\n", true);
     }
 
     // Run procedure
     if (mysql_stmt_execute(prepared_stmt) != 0) {
-        print_stmt_error(prepared_stmt, "An error occurred while retrieving the career report.");
+        print_stmt_error(prepared_stmt, "An error occurred while retrieving post information.");
         goto out;
     }
 
 
 
     do {
-        dump_result_set(conn, prepared_stmt, "\nDipendenti trovati:");
-    } while (mysql_stmt_next_result(prepared_stmt) == 0);
+        dump_result_set(conn, prepared_stmt, "\nPostazione trovata:");
+    } while (mysql_stmt_next_result(prepared_stmt) == 0);//mi assicuro di consumare tutto il result set, altrimenti potrei ottenere "out of sync"
 
     out:
     mysql_stmt_close(prepared_stmt);

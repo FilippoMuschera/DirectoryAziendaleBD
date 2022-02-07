@@ -186,6 +186,6 @@ char multiChoice(char *domanda, char choices[], int num)
 void date_to_mysql_time(char *str, MYSQL_TIME *time)
 {
     memset(time, 0, sizeof(*time));
-    printf("%s",str);
+    sscanf(str, "%4d-%2d-%2d", &time->year, &time->month, &time->day);
     time->time_type = MYSQL_TIMESTAMP_DATE;
 }
