@@ -1,3 +1,3 @@
 # DirectoryAziendaleBD
 
-Repository per progetto BD
+Project with a MySQL database and a C client
